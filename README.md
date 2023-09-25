@@ -22,3 +22,6 @@ How to test server in local:
     $ firebase emulators:start
 ````
 5. Go to: https://localhost:5000 and enjoy it.
+
+### Make sure that you is joint my project (itestcloudfunction) to run this repository.
+Contact me if you want to joint my firebase project. 
