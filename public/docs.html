@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hướng dẫn sử dụng API</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+
+      h1 {
+        color: #333;
+      }
+
+      h2 {
+        color: #555;
+        margin-top: 20px;
+      }
+
+      p {
+        color: #777;
+        margin-bottom: 20px;
+      }
+
+      pre {
+        background-color: #f5f5f5;
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+
+      form {
+        margin-bottom: 30px;
+      }
+
+      input[type='text'],
+      input[type='password'],
+      button {
+        padding: 10px;
+        margin-right: 10px;
+      }
+
+      button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>API Documents</h1>
+    <h4>
+      <p>
+        Đối với các phương thức POST, dữ liệu truyền lên theo 2 kiểu là
+        "application/x-www-form-urlencoded" hoặc "application/json"
+      </p>
+    </h4>
+
+    <h2>Đăng ký (Register) - POST</h2>
+    <p>
+      Để đăng ký một tài khoản mới, bạn cần thực hiện một yêu cầu POST đến đường
+      dẫn API đăng ký với dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/register
+        {
+            "mobile": "Số điện thoại đăng ký",
+            "password": "Mật khẩu"
+            "fullname": "Tên người dùng"
+        }
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+        {
+            "message": "success",
+            "data": {
+                "fullname": "Tên người dùng",
+                "mobile": "Số điện thoại đăng ký",
+                "nickname": ""
+            },
+            "apiKey": "JWT_TOKEN cho phiên đăng nhập"
+        }
+    </pre>
+
+    <h2>Đăng nhập (Login) - POST</h2>
+    <p>
+      Để đăng nhập, bạn cần thực hiện một yêu cầu POST đến đường dẫn API đăng
+      nhập với dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/login
+        {
+            "mobile": "Số điện thoại đăng ký tài khoản",
+            "password": "Mật khẩu"
+        }
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+        {
+            "message": "success",
+            "data": {
+                "fullname": "Tên người dùng",
+                "mobile": "Số điện thoại đăng ký",
+                "nickname": ""
+            },
+            "apiKey": "JWT_TOKEN cho phiên đăng nhập"
+        }
+    </pre>
+
+    <h2>Đăng xuất (Logout) - POST</h2>
+    <p>
+      Để đăng xuất, bạn cần thực hiện một yêu cầu POST đến đường dẫn API đăng
+      xuất với token xác thực.
+    </p>
+    <pre>
+        POST /api/logout
+        Authorization: Bearer API_KEY
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+        {
+            "message": "success"
+        }
+    </pre>
+
+    <h2>Cập nhật thông tin người dùng (Update User Information) - POST</h2>
+    <p>
+      Để cập nhật thông tin người dùng, bạn cần thực hiện một yêu cầu POST đến
+      đường dẫn API cập nhật với token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/update
+        Authorization: Bearer API_KEY
+        {
+            "fullname": "Tên người dùng mới (nếu muốn thay đổi)",
+            "nickname": "Biệt danh mới (nếu muốn thay đổi)"
+        }
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+        {
+            "message": "success",
+            "data": {
+                "fullname": "Tên người dùng",
+                "mobile": "Số điện thoại",
+                "nickname": "Biệt danh"
+            },
+            "apiKey": "JWT_TOKEN được cập nhật mới"
+        }
+    </pre>
+
+    <h2>Tìm kiếm người dùng khác (Search) - POST</h2>
+    <p>
+      Để tìm kiếm thông tin người dùng, bạn cần thực hiện một yêu cầu POST đến
+      đường dẫn API tìm kiếm với token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/search
+        Authorization: Bearer API_KEY
+        {
+            "mobile": "Số điện thoại người dùng cần tìm kiếm"
+        }
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+        {
+            "message": "success",
+            "data": {
+                "fullname": "Tên người dùng tìm thấy",
+                "mobile": "Số điện thoại của người dùng được tìm thấy",
+                "nickname": "Biệt danh của người dùng được tìm thấy"
+            },
+            "apiKey": "JWT_TOKEN được cập nhật mới"
+        }
+    </pre>
+  </body>
+</html>
