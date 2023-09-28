@@ -59,6 +59,9 @@ exports.login = async function (req, res, firestore, database, auth) {
           fullname: result.docs[0].get('fullname'),
           mobile: result.docs[0].get('mobile'),
           nickname: result.docs[0].get('nickname'),
+          gender: result.docs[0].get('gender'),
+          email: result.docs[0].get('email'),
+          birthday: result.docs[0].get('birthday'),
         },
         apiKey: apiKey,
       });
@@ -71,6 +74,8 @@ exports.login = async function (req, res, firestore, database, auth) {
       });
     } else {
       // otherwise, has error from server.
+      console.error('SERVER / USERES / LOGIN >> ERROR ', error);
+
       res.json({
         message: 'Server lỗi',
       });

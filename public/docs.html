@@ -6,26 +6,28 @@
       body {
         font-family: Arial, sans-serif;
         margin: 20px;
+        background-color: #1e1e1e;
+        color: #fff;
       }
 
       h1 {
-        color: #333;
+        color: #008fb3;
       }
 
       h2 {
-        color: #555;
+        color: #008fb3;
         margin-top: 20px;
       }
 
       p {
-        color: #777;
         margin-bottom: 20px;
       }
 
       pre {
-        background-color: #f5f5f5;
+        background-color: #333;
+        color: #fff;
         padding: 10px;
-        border: 1px solid #ddd;
+        border: 1px solid #555;
       }
 
       form {
@@ -37,12 +39,13 @@
       button {
         padding: 10px;
         margin-right: 10px;
+        background-color: #333;
+        border: none;
+        color: #fff;
       }
 
       button {
-        background-color: #007bff;
-        color: #fff;
-        border: none;
+        background-color: #008fb3;
         cursor: pointer;
       }
 
@@ -60,17 +63,20 @@
       </p>
     </h4>
 
+    <h2 style="color: crimson">USER</h2>
+
     <h2>Đăng ký (Register) - POST</h2>
     <p>
       Để đăng ký một tài khoản mới, bạn cần thực hiện một yêu cầu POST đến đường
       dẫn API đăng ký với dữ liệu sau:
     </p>
     <pre>
-        POST /api/register
+        POST /api/user/register
         {
             "mobile": "Số điện thoại đăng ký",
             "password": "Mật khẩu"
             "fullname": "Tên người dùng"
+            "vid": "Vinateks ID"
         }
     </pre>
     <p>Trả về:</p>
@@ -80,7 +86,11 @@
             "data": {
                 "fullname": "Tên người dùng",
                 "mobile": "Số điện thoại đăng ký",
-                "nickname": ""
+                "nickname": "Biệt danh người dùng, mặc định rỗng",
+                "gender": "Giới tính, 0 là nữ, 1 là nam, mặc định là 1 == Nam",
+                "email": "Email của người dùng, mặc định rỗng",
+                "birthday": "Ngày sinh người dùng, mặc định rỗng"
+
             },
             "apiKey": "JWT_TOKEN cho phiên đăng nhập"
         }
@@ -92,7 +102,7 @@
       nhập với dữ liệu sau:
     </p>
     <pre>
-        POST /api/login
+        POST /api/user/login
         {
             "mobile": "Số điện thoại đăng ký tài khoản",
             "password": "Mật khẩu"
@@ -105,9 +115,49 @@
             "data": {
                 "fullname": "Tên người dùng",
                 "mobile": "Số điện thoại đăng ký",
-                "nickname": ""
+                "nickname": "Biệt danh người dùng",
+                "gender": "Giới tính của người dùng, 0 là nữ, 1 là nam",
+                "email": "Email của người dùng",
+                "birthday": "Ngày sinh của người dùng"
             },
             "apiKey": "JWT_TOKEN cho phiên đăng nhập"
+        }
+    </pre>
+
+    <h2>
+      Đăng nhập bằng hệ thống bên ngoài (api khttest) (Login with external
+      system) - POST
+    </h2>
+    <p>
+      Để đăng nhập bằng hệ thống bên ngoài, bạn cần thực hiện một yêu cầu POST
+      đến đường dẫn API đăng nhập với dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/user/loginWithExternal
+        {
+            "mobile": "Tên đăng nhập của hệ thống bên ngoài",
+            "password": "Mật khẩu đăng nhập của hệ thống bên ngoài"
+        }
+    </pre>
+    <p>Nếu thành công nhưng chưa liên kết tài khoản</p>
+    <pre>
+        {
+            "message": "unlinked account",
+            "data": {
+                "fullname": "Tên người dùng",
+                "mobile": "Số điện thoại đăng ký",
+                "nickname": "Biệt danh người dùng",
+                "gender": "Giới tính của người dùng, 0 là nữ, 1 là nam",
+                "email": "Email của người dùng",
+                "birthday": "Ngày sinh của người dùng"
+            },
+        }
+    </pre>
+    <p>Nếu thành công và đã liên kết tài khoản</p>
+    <pre>
+        {
+            "message": "success",
+            ...
         }
     </pre>
 
@@ -117,7 +167,7 @@
       xuất với token xác thực.
     </p>
     <pre>
-        POST /api/logout
+        POST /api/user/logout
         Authorization: Bearer API_KEY
     </pre>
     <p>Trả về:</p>
@@ -133,11 +183,14 @@
       đường dẫn API cập nhật với token xác thực và dữ liệu sau:
     </p>
     <pre>
-        POST /api/update
+        POST /api/user/update
         Authorization: Bearer API_KEY
         {
             "fullname": "Tên người dùng mới (nếu muốn thay đổi)",
-            "nickname": "Biệt danh mới (nếu muốn thay đổi)"
+            "nickname": "Biệt danh mới (nếu muốn thay đổi)",
+            "email": "Email của người dùng",
+            "gender": "Giới tính, 0 là nữ, 1 là nam",
+            "birthday": "Ngày sinh của người dùng",
         }
     </pre>
     <p>Trả về:</p>
@@ -148,6 +201,9 @@
                 "fullname": "Tên người dùng",
                 "mobile": "Số điện thoại",
                 "nickname": "Biệt danh"
+                "gender": "Giới tính của người dùng, 0 là nữ, 1 là nam",
+                "email": "Email của người dùng",
+                "birthday": "Ngày sinh của người dùng",
             },
             "apiKey": "JWT_TOKEN được cập nhật mới"
         }
@@ -156,10 +212,10 @@
     <h2>Tìm kiếm người dùng khác (Search) - POST</h2>
     <p>
       Để tìm kiếm thông tin người dùng, bạn cần thực hiện một yêu cầu POST đến
-      đường dẫn API tìm kiếm với token xác thực và dữ liệu sau:
+      đường dẫn API với token xác thực và dữ liệu sau:
     </p>
     <pre>
-        POST /api/search
+        POST /api/user/search
         Authorization: Bearer API_KEY
         {
             "mobile": "Số điện thoại người dùng cần tìm kiếm"
@@ -170,12 +226,270 @@
         {
             "message": "success",
             "data": {
-                "fullname": "Tên người dùng tìm thấy",
+                "ref": "Liên kết tới người dùng được tìm thấy",
+                "fullname": "Tên người dùng được tìm thấy",
                 "mobile": "Số điện thoại của người dùng được tìm thấy",
                 "nickname": "Biệt danh của người dùng được tìm thấy"
+                "gender": "Giới tính của người dùng được tìm thấy, 0 là nữ, 1 là nam",
+                "email": "Email của người dùng được tìm thấy",
+                "birthday": "Ngày sinh của người dùng được tìm thấy",
+                "isFriend": "Biến Boolean, true nếu 2 người là bạn bè, false nếu không"
             },
             "apiKey": "JWT_TOKEN được cập nhật mới"
         }
+    </pre>
+
+    <h2>Gửi yêu cầu kết bạn (Request friend) - POST</h2>
+    <p>
+      Để gửi yêu cầu kết bạn với một người dùng khác, bạn cần thực hiện một yêu
+      cầu POST đến đường dẫn API với token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/user/requestFriend
+        Authorization: Bearer API_KEY
+        {
+            "ref": "Reference của người dùng bạn muốn kết bạn",
+        }
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+        {
+            "message": "success",
+            "status": "R"
+            "apiKey": "JWT_TOKEN được cập nhật mới"
+        }
+    </pre>
+    <p>
+      Trong đó, <i>status</i> có thể là:
+      <br />
+      R (Requested): Đã gửi yêu cầu kết bạn.
+      <br />
+      RC (Received): Đã nhận được yêu cầu kết bạn.
+      <br />
+      D (Denied): Từ chối yêu cầu kết bạn.
+      <br />
+      ID (Is Denied): Bị từ chối yêu cầu kết bạn.
+      <br />
+      B (Blocked): Chặn.
+      <br />
+      IB (Is Blocked): Đã bị chặn.
+      <br />
+      F (Friend): Bạn bè.
+    </p>
+
+    <h2>Lấy danh sách yêu cầu kết bạn (Get Request Friend List) - POST</h2>
+    <p>
+      Để lấy danh sách yêu cầu kết bạn, bạn cần thực hiện một yêu cầu POST đến
+      đường dẫn API với token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/user/getRequestList
+        Authorization: Bearer API_KEY
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+        {
+            "message": "success",
+            "data": [
+              {
+                "ref": "Reference của người gửi yêu cầu kết bạn",
+                "fullname": "Tên của người gửi yêu cầu kết bạn",
+                "mobile": "Số điện thoại của người gửi yêu cầu kết bạn",
+                "nickname": "Biệt danh của người gửi yêu cầu kết bạn"
+                "gender": "Giới tính của người gửi yêu cầu kết bạn, 0 là nữ, 1 là nam",
+                "email": "Email của của người gửi yêu cầu kết bạn",
+                "birthday": "Ngày sinh của của người gửi yêu cầu kết bạn"
+              },
+              ...
+            ]
+            "apiKey": "JWT_TOKEN được cập nhật mới"
+        }
+    </pre>
+
+    <h2>Phản hồi yêu cầu kết bạn (Reply Request) - POST</h2>
+    <p>
+      Để phản hồi yêu cầu kết bạn với một người dùng khác, bạn cần thực hiện một
+      yêu cầu POST đến đường dẫn API với token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/user/replyRequest
+        Authorization: Bearer API_KEY
+        {
+            "ref": "Reference của người dùng bạn muốn kết bạn",
+            "reply": "Phản hồi của bạn, 'accept' là đồng ý, 'deny' là hủy bỏ."
+        }
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+      {
+        "message": "success",
+        "status": "trạng thái phụ thuộc vào phản hồi của bạn (D hoặc F)"
+        "apiKey": "JWT_TOKEN được cập nhật mới"
+      }
+    </pre>
+
+    <h2>Lấy danh sách bạn bè (Get Friend List) - POST</h2>
+    <p>
+      Để lấy danh sách bạn bè, bạn cần thực hiện một yêu cầu POST đến đường dẫn
+      API với token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/user/getFriendList
+        Authorization: Bearer API_KEY
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+      {
+        "message": "success",
+        "data": [
+          {
+            "ref": "Reference của bạn bè",
+            "fullname": "Tên của bạn bè",
+            "mobile": "Số điện thoại của bạn bè",
+            "nickname": "Biệt danh của bạn bè"
+            "gender": "Giới tính của bạn bè, 0 là nữ, 1 là nam",
+            "email": "Email của của bạn bè",
+            "birthday": "Ngày sinh của của bạn bè"
+          },
+          ...
+        ]
+        "apiKey": "JWT_TOKEN được cập nhật mới"
+    }
+    </pre>
+
+    <h2>Lấy danh sách nhóm chat (Get Group List) - POST</h2>
+    <p>
+      Để lấy danh sách nhóm chat, bạn cần thực hiện một yêu cầu POST đến đường
+      dẫn API với token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/user/getGroupChat
+        Authorization: Bearer API_KEY
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+      {
+        "message": "success",
+        "data": [
+          {
+            "ref": "Reference của nhóm chat",
+            "name": "Tên nhóm chat",
+            "total_member": "Tổng thành viên trong nhóm",
+            "latest_message_text": "Nội dung tin nhắn mới nhất",
+            "latest_message_from": "Reference của người gửi tin nhắn mới nhất",
+            "latest_message_from_name": "Tên người gửi tin nhắn mới nhất",
+            "latest_message_sent_time": "Thời gian gửi của tin nhắn mới nhất",
+          }
+          ...
+        ]
+        "apiKey": "JWT_TOKEN được cập nhật mới"
+    }
+    </pre>
+
+    <h2 style="color: crimson">GROUP</h2>
+
+    <h2>Tạo nhóm chat (Create Group Chat) - POST</h2>
+    <p>
+      Để tạo nhóm chat, bạn cần thực hiện một yêu cầu POST đến đường dẫn API với
+      token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/group/create
+        Authorization: Bearer API_KEY
+        {
+          "refs": "Reference của các thành viên trong nhóm chat (array)",
+          "name": "Tên nhóm chat"
+        }
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+      {
+        "message": "success",
+        "apiKey": "JWT_TOKEN được cập nhật mới"
+      }
+    </pre>
+
+    <h2>Thêm thành viên vào nhóm chat (Add Member To Group) - POST</h2>
+    <p>
+      Để thêm thành viên vào nhóm chat, bạn cần thực hiện một yêu cầu POST đến
+      đường dẫn API với token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/group/addMember
+        Authorization: Bearer API_KEY
+        {
+          "groupRef": "Reference của nhóm chat",
+          "memberRefs": "Reference của các người dùng được thêm vào trong nhóm chat (array)"
+        }
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+      {
+        "message": "success",
+        "apiKey": "JWT_TOKEN được cập nhật mới"
+      }
+    </pre>
+
+    <h2>Gửi tin nhắn (Send Message) - POST</h2>
+    <p>
+      Để thêm thành viên vào nhóm chat, bạn cần thực hiện một yêu cầu POST đến
+      đường dẫn API với token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/group/sendMessage
+        Authorization: Bearer API_KEY
+        {
+          "to_group_ref": "Reference của nhóm chat",
+          "message": "Nội dung tin nhắn của người gửi"
+        }
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+      {
+        "message": "success",
+        "data": {
+            "sent_time": "Firebase Timestamp Object - Thời gian gửi tin nhắn (tính từ lúc server nhận được requset)"
+        },
+        "apiKey": "JWT_TOKEN được cập nhật mới"
+      }
+    </pre>
+
+    <h2>Lấy danh sách tin nhắn của nhóm chat (Get List Message) - POST</h2>
+    <p>
+      Để thêm thành viên vào nhóm chat, bạn cần thực hiện một yêu cầu POST đến
+      đường dẫn API với token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/group/getListMessage
+        Authorization: Bearer API_KEY
+        {
+          "group_ref": "Reference của nhóm chat",
+          "page": "Trang load tin nhắn",
+          "last_chat_id": "id của tin nhắn cuối cùng được load ở page trước (nếu là page 1 thì không cần tham số này), được trả về khi lấy thành công danh sách tin nhắn"
+          // ví dụ: sau khi load thành công danh sách tin nhắn ở page 1, sẽ lấy được last_chat_id của page 1, truyền tham số này vào nếu muốn lấy được tin nhắn ở page 2
+          // sau đó, lại lấy được last_chat_id của page 2, tiếp tục truyền vào nếu muốn lấy danh sách chat page 3.
+        }
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+      {
+        "message": "success",
+        "data": {
+          chats: [
+            {
+              message: "Nội dung tin nhắn",
+              from: "Reference của người gửi tin nhắn",
+              sent_time: "Firebase Timestamp Object - Thời gian gửi tin nhắn",
+              type: "Kiểu tin nhắn, 'text' là tin nhắn chữ, 'image' là tin nhắn ảnh"
+            },
+            ...
+          ],
+          page: "Trang tin nhắn hiện tại",    
+          last_chat_id: "Id tin nhắn cuối cùng của page hiện tại",
+          total_record: "Tổng số lượng tin nhắn của nhóm chat"
+        },
+        "apiKey": "JWT_TOKEN được cập nhật mới"
+      }
     </pre>
   </body>
 </html>

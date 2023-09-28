@@ -28,7 +28,7 @@ exports.refreshApiKey = async function (req, database) {
         // generate payload
         const payload = {
           ref: verify.refreshToken.data.ref,
-          uuid: verify.refreshToken.data.ref.uuid,
+          uuid: verify.refreshToken.data.uuid,
         };
 
         // generate new api key

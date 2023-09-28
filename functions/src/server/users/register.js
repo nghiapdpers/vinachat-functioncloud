@@ -4,7 +4,7 @@ const { v5 } = require('uuid');
 
 // register
 exports.register = async function (req, res, firestore, database) {
-  const { mobile, password, fullname } = req.body;
+  const { mobile, password, fullname, vid } = req.body;
 
   try {
     // check is mobile exist in database?
@@ -18,13 +18,18 @@ exports.register = async function (req, res, firestore, database) {
       // generate uuid for user
       const uuid = v5(mobile, process.env.VNC_UUID_NAMESPACE);
 
-      // save user information
+      // save user information to firestore
       const register = await firestore.collection('users').add({
         uuid,
         mobile,
         password,
         fullname,
         nickname: '',
+        vinateks_id: vid ? vid : '',
+        gender: '1',
+        email: '',
+        birthday: '',
+        groups: [],
       });
 
       // payload to create api key
@@ -59,6 +64,9 @@ exports.register = async function (req, res, firestore, database) {
           fullname,
           mobile,
           nickname: '',
+          gender: '1',
+          email: '',
+          birthday: '',
         },
         apiKey,
       });
@@ -72,7 +80,7 @@ exports.register = async function (req, res, firestore, database) {
     // end
     res.end();
   } catch (error) {
-    console.log(error);
+    console.error('SERVER / USERS / REGISTER >> ERROR ', error);
     res.json({
       message: 'Lỗi server',
     });

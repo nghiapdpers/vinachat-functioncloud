@@ -7,18 +7,20 @@ exports.verify = async function (req, database) {
 
   const apiKey = authorization.split(' ').at(1);
 
-  const refreshToken = await apiKeyUtils.filterApiKey(apiKey, database);
+  if (apiKey) {
+    const refreshToken = await apiKeyUtils.filterApiKey(apiKey, database);
 
-  if (refreshToken.val() != null) {
-    const apiDecrypt = await check(apiKey, process.env.SECRET);
+    if (refreshToken.val() != null) {
+      const apiDecrypt = await check(apiKey, process.env.SECRET);
 
-    const refreshDecrypt = await check(refreshToken.val(), apiKey);
+      const refreshDecrypt = await check(refreshToken.val(), apiKey);
 
-    return {
-      message: 'success',
-      apiKey: apiDecrypt,
-      refreshToken: refreshDecrypt,
-    };
+      return {
+        message: 'success',
+        apiKey: apiDecrypt,
+        refreshToken: refreshDecrypt,
+      };
+    }
   }
 
   return {

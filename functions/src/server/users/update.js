@@ -1,19 +1,21 @@
 const apiKeyUtils = require('../../utils/apiKey/index');
 
 exports.update = async function (req, res, firestore, database) {
-  const { fullname, nickname, email, gender, birthday } = req.body;
-
   const refreshApi = await apiKeyUtils.refreshApiKey(req, database);
 
   if (refreshApi.message === 'success') {
     const userRef = refreshApi.decrypt.ref;
 
-    const updateResult = await update(userRef, fullname, nickname, firestore);
+    const updateResult = await update(userRef, req.body, firestore);
 
-    res.json({
-      ...updateResult,
-      apiKey: refreshApi.apiKey,
-    });
+    if (updateResult.message === 'success') {
+      res.json({
+        ...updateResult,
+        apiKey: refreshApi.apiKey,
+      });
+    } else {
+      res.json(updateResult);
+    }
   } else {
     res.json(refreshApi);
   }
@@ -21,12 +23,27 @@ exports.update = async function (req, res, firestore, database) {
   res.end();
 };
 
-async function update(ref, fullname, nickname, firestore) {
+async function update(ref, data, firestore) {
+  const { fullname, nickname, email, gender, birthday, vid } = data;
+
+  const updateData = {
+    fullname,
+    nickname,
+    email,
+    gender,
+    birthday,
+    vinateks_id: vid,
+  };
+
+  !fullname && delete updateData.fullname;
+  !nickname && delete updateData.nickname;
+  !email && delete updateData.email;
+  !gender && delete updateData.gender;
+  !birthday && delete updateData.birthday;
+  !vid && delete updateData.vinateks_id;
+
   try {
-    await firestore.collection('users').doc(ref).update({
-      fullname: fullname,
-      nickname: nickname,
-    });
+    await firestore.collection('users').doc(ref).update(updateData);
 
     const user = await firestore.collection('users').doc(ref).get();
 
@@ -36,6 +53,9 @@ async function update(ref, fullname, nickname, firestore) {
         fullname: user.get('fullname'),
         mobile: user.get('mobile'),
         nickname: user.get('nickname'),
+        gender: user.get('gender'),
+        email: user.get('email'),
+        birthday: user.get('birthday'),
       },
     };
   } catch (error) {
@@ -44,5 +64,11 @@ async function update(ref, fullname, nickname, firestore) {
         message: 'Không tìm thấy người dùng',
       };
     }
+
+    console.error('SERVER / USERS / UPDATE >> ERROR ', error);
+
+    return {
+      message: 'Server lỗi',
+    };
   }
 }
