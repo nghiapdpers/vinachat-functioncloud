@@ -10,7 +10,18 @@ How to test server in local:
     - Create Realtime Database
     - Enable Authentication
 3. Open CMD, and login to Firebase: https://firebase.google.com/docs/cli#sign-in-test-cli, Check your project by command:
-    - firebase projects:list
+````
+    $ firebase projects:list
+````
 4. Go to root directiory of this repository and run:
-    - firebase emulators:start
+````
+    // go to functions and install dependencies:
+    $ cd functions && npm install
+
+    // after that, run firebase emulator:
+    $ firebase emulators:start
+````
 5. Go to: https://localhost:5000 and enjoy it.
+
+### Make sure that you is joint my project (itestcloudfunction) to run this repository.
+Contact me if you want to joint my firebase project. 
