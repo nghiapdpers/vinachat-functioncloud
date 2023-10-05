@@ -708,7 +708,7 @@
 					"urlencoded": [
 						{
 							"key": "refs",
-							"value": "[\"ref1\", \"ref2\"]",
+							"value": "[\"13raHvq0qEBvnOiVOP53\", \"hiERh7sTKF4E5ORmfN8k\"]",
 							"type": "text"
 						},
 						{
@@ -1024,6 +1024,15 @@
 				},
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"data\": [\r\n        {\r\n            \"fullname\": \"admin\",\r\n            \"mobile\": \"0000\"\r\n        },\r\n        {\r\n            \"fullname\": \"pham duy nghia\",\r\n            \"mobile\": \"0123456789\"\r\n        },\r\n        {\r\n            \"fullname\": \"dac thanh thuan\",\r\n            \"mobile\": \"0147258369\"\r\n        },\r\n        {\r\n            \"fullname\": \"nguyen trung thinh\",\r\n            \"mobile\": \"0987654321\"\r\n        }\r\n    ],\r\n    \"make_friend_for_id\": [0,1,3]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": "{{domain}}/api/generate",
 					"host": [
