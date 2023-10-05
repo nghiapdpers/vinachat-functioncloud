@@ -9,7 +9,7 @@ const express = require('express');
 const userActions = require('./src/server/users/index');
 const groupActions = require('./src/server/groups/index');
 const apiKeyUtils = require('./src/utils/apiKey/index');
-const { FieldPath, FieldValue } = require('firebase-admin/firestore');
+const { generateData } = require('./src/server/test/generate');
 
 const database = admin.database();
 const firestore = admin.firestore();
@@ -104,7 +104,7 @@ app.post('/verify', async (req, res) => {
 });
 
 app.post('/generate', async (req, res) => {
-  await generateInfomation();
+  await generateData(req);
   res.end();
 });
 
@@ -114,47 +114,3 @@ app.use('/group', groups);
 main.use('/api', app);
 
 exports.api = functions.https.onRequest(main);
-
-async function generateInfomation() {
-  const authPromises = [
-    auth.createUser({
-      phoneNumber: '+840123456789',
-    }),
-    auth.createUser({
-      phoneNumber: '+840000',
-    }),
-    auth.createUser({
-      phoneNumber: '+840147258369',
-    }),
-    auth.createUser({
-      phoneNumber: '+840987654321',
-    }),
-  ];
-
-  await Promise.all(authPromises);
-
-  const userPromises = [
-    firestore.collection('users').add({
-      mobile: '0000',
-      fullname: 'admin',
-      password: '1234',
-    }),
-    firestore.collection('users').add({
-      mobile: '0123456789',
-      fullname: 'pham duy nghia',
-      password: '1234',
-    }),
-    firestore.collection('users').add({
-      mobile: '0147258369',
-      fullname: 'dac thanh thuan',
-      password: '1234',
-    }),
-    firestore.collection('users').add({
-      mobile: '0987654321',
-      fullname: 'nguyen trung thinh',
-      password: '1234',
-    }),
-  ];
-
-  await Promise.all(userPromises);
-}

@@ -13,7 +13,7 @@ exports.requestFriend = async function (req, res, firestore, database) {
     const isExist = await firestore.collection('users').doc(ref).get();
 
     // if friend document is exist
-    if (isExist.exists) {
+    if (isExist.exists && ref !== refreshApi.decrypt.ref) {
       const result = await updateRelationship(
         refreshApi.decrypt.ref,
         ref,
@@ -30,6 +30,7 @@ exports.requestFriend = async function (req, res, firestore, database) {
     else {
       res.json({
         message: 'Người dùng này không tồn tại',
+        apiKey: refreshApi.apiKey,
       });
     }
   }

@@ -61,6 +61,7 @@ exports.register = async function (req, res, firestore, database) {
       res.json({
         message: 'success',
         data: {
+          ref: register.id,
           fullname,
           mobile,
           nickname: '',

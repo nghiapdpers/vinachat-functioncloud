@@ -84,6 +84,7 @@
         {
             "message": "success",
             "data": {
+                "ref": "Reference của người dùng",
                 "fullname": "Tên người dùng",
                 "mobile": "Số điện thoại đăng ký",
                 "nickname": "Biệt danh người dùng, mặc định rỗng",
@@ -113,6 +114,7 @@
         {
             "message": "success",
             "data": {
+                "ref": "Reference của người dùng",
                 "fullname": "Tên người dùng",
                 "mobile": "Số điện thoại đăng ký",
                 "nickname": "Biệt danh người dùng",
@@ -149,15 +151,26 @@
                 "nickname": "Biệt danh người dùng",
                 "gender": "Giới tính của người dùng, 0 là nữ, 1 là nam",
                 "email": "Email của người dùng",
-                "birthday": "Ngày sinh của người dùng"
+                "birthday": "Ngày sinh của người dùng",
+                "vinateks_id": "ID của hệ thống bên ngoài"
             },
+            "apiKey": "JWT_TOKEN cho phiên đăng nhập"
         }
     </pre>
     <p>Nếu thành công và đã liên kết tài khoản</p>
     <pre>
         {
             "message": "success",
-            ...
+            "data": {
+                "ref": "Reference của người dùng",
+                "fullname": "Tên người dùng",
+                "mobile": "Số điện thoại đăng ký",
+                "nickname": "Biệt danh người dùng",
+                "gender": "Giới tính của người dùng, 0 là nữ, 1 là nam",
+                "email": "Email của người dùng",
+                "birthday": "Ngày sinh của người dùng"
+            }
+            "apiKey": "JWT_TOKEN cho phiên đăng nhập"
         }
     </pre>
 
@@ -490,6 +503,33 @@
         },
         "apiKey": "JWT_TOKEN được cập nhật mới"
       }
+    </pre>
+
+    <h2>Tạo dữ liệu mẫu (Generate Data Test) - POST</h2>
+    <p>
+      Để tạo dữ liệu mẫu, bạn cần thực hiện một yêu cầu POST đến đường dẫn API
+      với token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/generate
+        Authorization: Bearer API_KEY
+        {
+          "data": [
+            {
+              fullname: "Tên đăng ký",
+              mobile: "Số điện thoại đăng ký"
+            },
+            ...
+          ],
+          "make_friend_for_id": "Mảng chứa vị trí muốn kết bạn (bắt đầu từ 0). Ví dụ [1,2,3] sẽ thực hiện kết bạn
+          cho các tài khoản có vị trí 1,2,3 trong mảng data được cung cấp, 1 sẽ kết bạn với 2 và 3, 2 sẽ kết bạn
+          với 3. Tương tự, cung cấp bao nhiêu vị trí, thì các tài khoản được cung cấp trong mảng data sẽ kết bạn với nhau."
+        }
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+      EMPTY - rỗng. API này không trả về bất kỳ dữ liệu nào. Các tài khoản được tạo bằng số điện thoại
+      được cung cấp với mật khẩu là "1234"
     </pre>
   </body>
 </html>

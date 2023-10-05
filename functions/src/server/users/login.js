@@ -56,6 +56,7 @@ exports.login = async function (req, res, firestore, database, auth) {
       res.json({
         message: `success`,
         data: {
+          ref: result.docs[0].id,
           fullname: result.docs[0].get('fullname'),
           mobile: result.docs[0].get('mobile'),
           nickname: result.docs[0].get('nickname'),
