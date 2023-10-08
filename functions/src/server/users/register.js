@@ -1,12 +1,21 @@
+const admin = require('firebase-admin');
+
 const jwtUtils = require('../../utils/jwt/index');
 const apiKeyUtils = require('../../utils/apiKey/index');
 const { v5 } = require('uuid');
 
+const auth = admin.auth();
+const database = admin.database();
+const firestore = admin.firestore();
+
 // register
-exports.register = async function (req, res, firestore, database) {
+exports.register = async function (req, res) {
   const { mobile, password, fullname, vid } = req.body;
 
   try {
+    // is mobile number identify by firebase authentication?.
+    const authResult = await auth.getUserByPhoneNumber(`+84${mobile}`);
+
     // check is mobile exist in database?
     const isExist = await firestore
       .collection('users')
@@ -57,6 +66,11 @@ exports.register = async function (req, res, firestore, database) {
       // save api to server
       await apiKeyUtils.saveApiKey(apiKey, refreshToken, database);
 
+      // create firebase verify token to login in client
+      const firebaseToken = await auth.createCustomToken(authResult.uid, {
+        ref: register.id,
+      });
+
       // respone json
       res.json({
         message: 'success',
@@ -70,6 +84,7 @@ exports.register = async function (req, res, firestore, database) {
           birthday: '',
         },
         apiKey,
+        firebaseToken,
       });
     } else {
       // otherwise, if mobile is exist in database
@@ -82,9 +97,17 @@ exports.register = async function (req, res, firestore, database) {
     res.end();
   } catch (error) {
     console.error('SERVER / USERS / REGISTER >> ERROR ', error);
-    res.json({
-      message: 'Lỗi server',
-    });
+
+    // if mobile number isn't identify by Firebase authentication.
+    if (error.code === 'auth/user-not-found') {
+      res.json({
+        message: 'Số điện thoại chưa đăng ký tài khoản',
+      });
+    } else {
+      res.json({
+        message: 'Lỗi server',
+      });
+    }
 
     res.end();
   }

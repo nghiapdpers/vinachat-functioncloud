@@ -4,12 +4,16 @@ const functions = require('firebase-functions/v1');
 // The Firebase Admin SDK to access Firestore.
 const admin = require('firebase-admin');
 admin.initializeApp();
+
 const express = require('express');
 
 const userActions = require('./src/server/users/index');
 const groupActions = require('./src/server/groups/index');
 const apiKeyUtils = require('./src/utils/apiKey/index');
 const { generateData } = require('./src/server/test/generate');
+const {
+  onMessageListener,
+} = require('./src/utils/firestore/onSendMessageListener');
 
 const database = admin.database();
 const firestore = admin.firestore();
@@ -20,19 +24,19 @@ const app = express();
 const users = express();
 const groups = express();
 
-//
+//---------------------------------------------------------------------------
 // -----------------USER--------------------
 //
 users.post('/login', async (req, res) => {
-  userActions.login(req, res, firestore, database, auth);
+  userActions.login(req, res);
 });
 
 users.post('/loginWithExternal', async (req, res) => {
-  userActions.loginWithExternal(req, res, firestore, database, auth);
+  userActions.loginWithExternal(req, res);
 });
 
 users.post('/register', async (req, res) => {
-  userActions.register(req, res, firestore, database);
+  userActions.register(req, res);
 });
 
 users.post('/logout', async (req, res) => {
@@ -67,7 +71,7 @@ users.post('/getGroupChat', async (req, res) => {
   userActions.getGroupChat(req, res, firestore, database);
 });
 
-//
+//---------------------------------------------------------------------------
 // --------------------GROUP------------------
 //
 groups.post('/create', async (req, res) => {
@@ -86,8 +90,27 @@ groups.post('/getListMessage', async (req, res) => {
   groupActions.getListChat(req, res, firestore, database);
 });
 
+//---------------------------------------------------------------------------
+// ---------------------STORAGE---------------------
 //
-// chức năng chỉ để test - only for test
+// exports.onStorage = functions.storage
+//   .bucket()
+//   .object()
+//   .onFinalize((e) => {
+//     console.log(e.name, e.timeCreated, e.metadata);
+//   });
+
+//---------------------------------------------------------------------------
+// ---------------------FIRESTORE-----------------
+//
+exports.onSendMessage = functions.firestore
+  .document('groups/{groupId}/messages/{messageId}')
+  .onCreate((snapshot, ctx) => {
+    return onMessageListener(snapshot, ctx);
+  });
+
+//---------------------------------------------------------------------------
+// ------------chức năng chỉ để test - only for test
 //
 app.post('/refresh', async (req, res) => {
   const result = await apiKeyUtils.refreshApiKey(req, database);
@@ -103,9 +126,8 @@ app.post('/verify', async (req, res) => {
   res.end();
 });
 
-app.post('/generate', async (req, res) => {
-  await generateData(req);
-  res.end();
+app.post('/generate', (req, res) => {
+  generateData(req, res);
 });
 
 app.use('/user', users);

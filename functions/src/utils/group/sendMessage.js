@@ -27,6 +27,7 @@ exports.sendMessage = async function sendMessage(
     message: message,
     sent_time: now,
     type: 'text',
+    from_name: fromUser.get('fullname'),
   });
 
   try {

@@ -13,7 +13,7 @@ exports.createAuth = async function (mobile) {
 };
 
 exports.registerUser = async function (mobile, fullname) {
-  firestore.collection('users').add({
+  return firestore.collection('users').add({
     mobile: mobile,
     fullname: fullname,
     password: '1234',
@@ -89,7 +89,9 @@ exports.makeFriend = async function (mobiles) {
   await batch.commit();
 
   // create group
-  makeGroupRefs.forEach((item) => {
-    createGroup(item, '', '', firestore);
+  const createMaps = makeGroupRefs.map((item) => {
+    return createGroup(item, '', '', firestore);
   });
+
+  await Promise.all(createMaps);
 };

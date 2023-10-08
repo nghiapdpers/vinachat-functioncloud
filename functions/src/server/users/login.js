@@ -1,13 +1,19 @@
+const admin = require('firebase-admin');
+
 const { Filter } = require('firebase-admin/firestore');
 const jwtUtils = require('../../utils/jwt/index');
 const apiKeyUtils = require('../../utils/apiKey/index');
 
-exports.login = async function (req, res, firestore, database, auth) {
+const auth = admin.auth();
+const database = admin.database();
+const firestore = admin.firestore();
+
+exports.login = async function (req, res) {
   const { mobile, password } = req.body;
 
   try {
     // is mobile number identify by firebase authentication?.
-    await auth.getUserByPhoneNumber(`+84${mobile}`);
+    const authResult = await auth.getUserByPhoneNumber(`+84${mobile}`);
 
     // database query condition
     const queryCondition = Filter.and(
@@ -50,7 +56,13 @@ exports.login = async function (req, res, firestore, database, auth) {
         process.env.ALGORITHM
       );
 
+      // save apikey and refreshtoken to server
       await apiKeyUtils.saveApiKey(apiKey, refreshToken, database);
+
+      // create firebase verify token to login in client
+      const firebaseToken = await auth.createCustomToken(authResult.uid, {
+        ref: result.docs[0].id,
+      });
 
       // respone
       res.json({
@@ -65,6 +77,7 @@ exports.login = async function (req, res, firestore, database, auth) {
           birthday: result.docs[0].get('birthday'),
         },
         apiKey: apiKey,
+        firebaseToken: firebaseToken,
       });
     }
   } catch (error) {
