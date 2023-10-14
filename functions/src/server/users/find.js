@@ -41,16 +41,17 @@ async function finding(myRef, keyword, firestore) {
     .get();
 
   if (!result.empty) {
-    const isFriendCondition = Filter.and(
-      Filter.where(FieldPath.documentId(), '==', result.docs[0].id),
-      Filter.where('status', '==', 'F')
+    const statusCondition = Filter.where(
+      FieldPath.documentId(),
+      '==',
+      result.docs[0].id
     );
 
-    const isFriend = await firestore
+    const status = await firestore
       .collection('users')
       .doc(myRef)
       .collection('relationship')
-      .where(isFriendCondition)
+      .where(statusCondition)
       .limit(1)
       .get();
 
@@ -64,7 +65,7 @@ async function finding(myRef, keyword, firestore) {
         gender: result.docs[0].get('gender'),
         email: result.docs[0].get('email'),
         birthday: result.docs[0].get('birthday'),
-        isFriend: isFriend.empty ? false : true,
+        status: status.empty ? 'N' : status.docs[0].get('status'),
       },
     };
   }

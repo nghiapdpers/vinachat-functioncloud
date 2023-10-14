@@ -45,7 +45,10 @@ exports.getListChat = async function (
     return {
       message: 'success',
       data: {
-        chats: list.docs.map((item) => item.data()),
+        chats: list.docs.map((item) => ({
+          ref: item.id,
+          ...item.data(),
+        })),
         page: page,
         last_chat_id: list.size > 0 ? list.docs[list.size - 1].id : '',
         total_record: total_record.data().count,

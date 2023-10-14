@@ -246,7 +246,7 @@
                 "gender": "Giới tính của người dùng được tìm thấy, 0 là nữ, 1 là nam",
                 "email": "Email của người dùng được tìm thấy",
                 "birthday": "Ngày sinh của người dùng được tìm thấy",
-                "isFriend": "Biến Boolean, true nếu 2 người là bạn bè, false nếu không"
+                "status": "Tình trạng mối quan hệ hiện tại, chi tiết tại API Request Friend bên dưới."
             },
             "apiKey": "JWT_TOKEN được cập nhật mới"
         }
@@ -274,6 +274,9 @@
     </pre>
     <p>
       Trong đó, <i>status</i> có thể là:
+      <br />
+      N (Nothing): Không quen biết.
+      <br />
       <br />
       R (Requested): Đã gửi yêu cầu kết bạn.
       <br />
