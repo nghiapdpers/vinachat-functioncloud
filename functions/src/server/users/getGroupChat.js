@@ -1,7 +1,12 @@
+const admin = require('firebase-admin');
+
+const firestore = admin.firestore();
+const database = admin.database();
+
 const apiKeyUtils = require('../../utils/apiKey/index');
 const { FieldPath } = require('firebase-admin/firestore');
 
-exports.getGroupChat = async function (req, res, firestore, database) {
+exports.getGroupChat = async function (req, res) {
   // check and get api key
   const refreshApi = await apiKeyUtils.refreshApiKey(req, database);
 
@@ -34,6 +39,17 @@ exports.getGroupChat = async function (req, res, firestore, database) {
         .collection('groups')
         .where(FieldPath.documentId(), 'in', groupList)
         .get();
+
+      groups.docs.sort((a, b) => {
+        if (
+          a.get('latest_message_sent_time').toMillis() <
+          b.get('latest_message_sent_time').toMillis()
+        ) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
 
       // generate data to respone
       const promises = groups.docs.map(async (item) => {

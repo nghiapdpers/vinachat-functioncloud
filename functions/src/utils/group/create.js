@@ -7,20 +7,21 @@ exports.createGroup = async function (refs, adminRef, name, firestore) {
   // create group reference
   const groupRef = firestore.collection('groups').doc();
 
+  // time to create/join group
+  const now = Timestamp.now();
+
   // create group with reference above
   batch.set(groupRef, {
     name: name,
     total_member: refs.length,
     adminRef: adminRef,
+    latest_message_sent_time: now,
   });
 
   // create list member reference
   const memberRefs = refs.map((item) =>
     groupRef.collection('members').doc(item)
   );
-
-  // time to joint group
-  const now = Timestamp.now();
 
   // set member to collection members in group
   memberRefs.forEach(async (ref) => {

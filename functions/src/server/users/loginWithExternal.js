@@ -91,7 +91,7 @@ exports.loginWithExternal = async (req, res) => {
 
           // create firebase verify token to login in client
           const firebaseToken = await auth.createCustomToken(authResult.uid, {
-            ref: register.id,
+            ref: result.docs[0].id,
           });
 
           // respone login option
@@ -106,6 +106,7 @@ exports.loginWithExternal = async (req, res) => {
               birthday: result.docs[0].get('birthday'),
             },
             apiKey: apiKey,
+            firebaseToken: firebaseToken,
           });
         } catch (error) {
           // if get user auth error:

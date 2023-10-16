@@ -90,6 +90,10 @@ groups.post('/getListMessage', async (req, res) => {
   groupActions.getListChat(req, res, firestore, database);
 });
 
+groups.post('/synchronous', async (req, res) => {
+  groupActions.synchronous(req, res);
+});
+
 //---------------------------------------------------------------------------
 // ---------------------STORAGE---------------------
 //
