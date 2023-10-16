@@ -493,6 +493,7 @@
         "data": {
           chats: [
             {
+              ref: 'Reference tin nhắn',
               message: "Nội dung tin nhắn",
               from: "Reference của người gửi tin nhắn",
               sent_time: "Firebase Timestamp Object - Thời gian gửi tin nhắn",
@@ -504,6 +505,37 @@
           last_chat_id: "Id tin nhắn cuối cùng của page hiện tại",
           total_record: "Tổng số lượng tin nhắn của nhóm chat"
         },
+        "apiKey": "JWT_TOKEN được cập nhật mới"
+      }
+    </pre>
+
+    <h2>Đồng bộ tin nhắn chat (Synchronous Message) - POST</h2>
+    <p>
+      Để đồng bộ tin nhắn chat, bạn cần thực hiện một yêu cầu POST đến đường dẫn
+      API với token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/group/synchronous
+        Authorization: Bearer API_KEY
+        {
+          "group_ref": "Reference của nhóm chat",
+          "last_chat_ref": "ref của tin nhắn cuối cần được lưu tại ở local".
+        }
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+      {
+        "message": "success",
+        "data": [
+          {
+            ref: 'Reference tin nhắn',
+            message: "Nội dung tin nhắn",
+            from: "Reference của người gửi tin nhắn",
+            sent_time: "Firebase Timestamp Object - Thời gian gửi tin nhắn",
+            type: "Kiểu tin nhắn, 'text' là tin nhắn chữ, 'image' là tin nhắn ảnh"
+          },
+          ...
+        ],
         "apiKey": "JWT_TOKEN được cập nhật mới"
       }
     </pre>
