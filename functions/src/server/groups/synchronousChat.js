@@ -31,21 +31,32 @@ exports.synchronousChat = async (req, res) => {
     }
     // otherwise,
     else {
-      const last_chat_doc = await firestore
-        .collection('groups')
-        .doc(group_ref)
-        .collection('messages')
-        .doc(last_chat_ref)
-        .get();
+      let synchronousData;
 
-      const synchronousData = await firestore
-        .collection('groups')
-        .doc(group_ref)
-        .collection('messages')
-        .orderBy('sent_time', 'asc')
-        .startAfter(last_chat_doc)
-        .get();
+      if (last_chat_ref == undefined || last_chat_ref == '') {
+        synchronousData = await firestore
+          .collection('groups')
+          .doc(group_ref)
+          .collection('messages')
+          .orderBy('sent_time', 'asc')
+          .limit(20)
+          .get();
+      } else {
+        const last_chat_doc = await firestore
+          .collection('groups')
+          .doc(group_ref)
+          .collection('messages')
+          .doc(last_chat_ref)
+          .get();
 
+        synchronousData = await firestore
+          .collection('groups')
+          .doc(group_ref)
+          .collection('messages')
+          .orderBy('sent_time', 'asc')
+          .startAfter(last_chat_doc)
+          .get();
+      }
       result = {
         message: 'success',
         data: synchronousData.docs.map((item) => {

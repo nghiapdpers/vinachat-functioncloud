@@ -91,6 +91,7 @@ exports.getGroupChat = async function (req, res) {
           latest_message_from_name: item.get('latest_message_from_name'),
           latest_message_sent_time: item.get('latest_message_sent_time'),
           latest_message_type: item.get('latest_message_type'),
+          latest_message_ref: item.get('latest_message_ref'),
         };
       });
 

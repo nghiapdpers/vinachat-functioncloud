@@ -50,6 +50,7 @@ async function update(ref, data, firestore) {
     return {
       message: 'success',
       data: {
+        ref: user.id,
         fullname: user.get('fullname'),
         mobile: user.get('mobile'),
         nickname: user.get('nickname'),

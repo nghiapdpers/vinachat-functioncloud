@@ -3,7 +3,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{userId}/{documents=**}{
-    	allow read: if request.auth.token.ref == userId
+    	allow read, write, create, update: if request.auth.token.ref == userId
     }
     
     match /groups/{groupId}{
