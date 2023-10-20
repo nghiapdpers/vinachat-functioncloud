@@ -11,9 +11,11 @@ const firestore = admin.firestore();
 exports.login = async function (req, res) {
   const { mobile, password } = req.body;
 
+  const formatMobile = mobile.slice(1);
+
   try {
     // is mobile number identify by firebase authentication?.
-    const authResult = await auth.getUserByPhoneNumber(`+84${mobile}`);
+    const authResult = await auth.getUserByPhoneNumber(`+84${formatMobile}`);
 
     // database query condition
     const queryCondition = Filter.and(

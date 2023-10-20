@@ -34,26 +34,40 @@ exports.loginWithExternal = async (req, res) => {
           await auth.createUser({
             phoneNumber: `+84${mobile}`,
           });
+
+          // respone to client
+          res.json({
+            message: 'unlinked account',
+            data: {
+              fullname: user.data.fullname,
+              mobile,
+              nickname: '',
+              vinateks_id: user.data.user_id,
+            },
+          });
         } catch (error) {
           // if auth account is exist continue
+          // respone to client
+          res.json({
+            message: 'unlinked account',
+            data: {
+              fullname: user.data.fullname,
+              mobile,
+              nickname: '',
+              vinateks_id: user.data.user_id,
+            },
+          });
         }
-
-        // respone to client
-        res.json({
-          message: 'unlinked account',
-          data: {
-            fullname: user.data.fullname,
-            mobile,
-            nickname: '',
-            vinateks_id: user.data.user_id,
-          },
-        });
       }
       // otherwise, user had created.
       else {
         // try get user auth information
+        const formatMobile = mobile.slice(1);
+
         try {
-          const authResult = await auth.getUserByPhoneNumber(`+84${mobile}`);
+          const authResult = await auth.getUserByPhoneNumber(
+            `+84${formatMobile}`
+          );
 
           const vid = result.docs[0].get['vinateks_id'];
           // if account have no vinateks_id

@@ -1,28 +1,55 @@
-// The Cloud Functions for Firebase SDK to create Cloud Functions and set up triggers.
-const functions = require('firebase-functions/v1');
-
-// The Firebase Admin SDK to access Firestore.
+require('dotenv').config();
 const admin = require('firebase-admin');
-admin.initializeApp();
-
 const express = require('express');
+const bodyParser = require('body-parser');
 
-const userActions = require('./src/server/users/index');
-const groupActions = require('./src/server/groups/index');
-const apiKeyUtils = require('./src/utils/apiKey/index');
-const { generateData } = require('./src/server/test/generate');
+var serviceAccount = require('./itestcloudfunction-firebase-adminsdk-262by-76e6101f3a.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL:
+    'https://itestcloudfunction-default-rtdb.asia-southeast1.firebasedatabase.app',
+  storageBucket: 'itestcloudfunction.appspot.com',
+});
+
+const userActions = require('./express/server/users/index');
+const groupActions = require('./express/server/groups/index');
+const apiKeyUtils = require('./express/utils/apiKey/index');
+const { generateData } = require('./express/server/test/generate');
 const {
   onMessageListener,
-} = require('./src/utils/firestore/onSendMessageListener');
+} = require('./express/utils/firestore/onSendMessageListener');
+
+let isBypassFirstStart = false;
 
 const database = admin.database();
 const firestore = admin.firestore();
-const auth = admin.auth();
 
 const main = express();
-const app = express();
+const api = express();
 const users = express();
 const groups = express();
+
+main.use(express.static('public'));
+main.use(bodyParser.json());
+api.use(bodyParser.json());
+users.use(bodyParser.json());
+groups.use(bodyParser.json());
+
+// running server
+main.listen(process.env.PORT | 3000, () => {
+  console.log('Server is running...');
+});
+
+// home
+main.get('/', (req, res) => {
+  res.sendFile('./index.html');
+});
+
+// api documents
+api.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/docs.html');
+});
 
 //---------------------------------------------------------------------------
 // -----------------USER--------------------
@@ -95,48 +122,49 @@ groups.post('/synchronous', async (req, res) => {
 });
 
 //---------------------------------------------------------------------------
-// ---------------------STORAGE---------------------
-//
-// exports.onStorage = functions.storage
-//   .bucket()
-//   .object()
-//   .onFinalize((e) => {
-//     console.log(e.name, e.timeCreated, e.metadata);
-//   });
+// ------------ UPDATE LATEST MESSAGE FOR GROUP
+firestore.collectionGroup('messages').onSnapshot((snapshot) => {
+  snapshot.docChanges().forEach((item) => {
+    const timer = setTimeout(() => {
+      isBypassFirstStart = true;
+      clearTimeout(timer);
+    });
+    if (item.type === 'added' && isBypassFirstStart) {
+      const snapshot = item.doc;
+      const groupId = item.doc.ref.parent.parent.id;
+      const context = {
+        params: {
+          groupId,
+        },
+      };
 
-//---------------------------------------------------------------------------
-// ---------------------FIRESTORE-----------------
-//
-exports.onSendMessage = functions.firestore
-  .document('groups/{groupId}/messages/{messageId}')
-  .onCreate((snapshot, ctx) => {
-    return onMessageListener(snapshot, ctx);
+      onMessageListener(snapshot, context);
+    }
   });
+});
 
 //---------------------------------------------------------------------------
 // ------------chức năng chỉ để test - only for test
 //
-app.post('/refresh', async (req, res) => {
+api.post('/refresh', async (req, res) => {
   const result = await apiKeyUtils.refreshApiKey(req, database);
 
   res.json(result);
   res.end();
 });
 
-app.post('/verify', async (req, res) => {
+api.post('/verify', async (req, res) => {
   const result = await apiKeyUtils.verifyApiKey(req, database);
 
   res.json(result);
   res.end();
 });
 
-app.post('/generate', (req, res) => {
+api.post('/generate', (req, res) => {
   generateData(req, res);
 });
 
-app.use('/user', users);
-app.use('/group', groups);
+api.use('/user', users);
+api.use('/group', groups);
 
-main.use('/api', app);
-
-exports.api = functions.https.onRequest(main);
+main.use('/api', api);

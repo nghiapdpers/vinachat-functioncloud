@@ -12,9 +12,12 @@ const firestore = admin.firestore();
 exports.register = async function (req, res) {
   const { mobile, password, fullname, vid } = req.body;
 
+  // format 0123456789 ==> 123456789
+  const formatMobile = mobile.slice(1);
+
   try {
     // is mobile number identify by firebase authentication?.
-    const authResult = await auth.getUserByPhoneNumber(`+84${mobile}`);
+    const authResult = await auth.getUserByPhoneNumber(`+84${formatMobile}`);
 
     // check is mobile exist in database?
     const isExist = await firestore
