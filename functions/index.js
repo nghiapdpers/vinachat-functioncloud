@@ -71,6 +71,14 @@ users.post('/getGroupChat', async (req, res) => {
   userActions.getGroupChat(req, res, firestore, database);
 });
 
+users.post('/getDetail', async (req, res) => {
+  userActions.getDetail(req, res);
+});
+
+users.post('/changePassword', async (req, res) => {
+  userActions.changePassword(req, res);
+});
+
 //---------------------------------------------------------------------------
 // --------------------GROUP------------------
 //

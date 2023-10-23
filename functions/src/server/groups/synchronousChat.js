@@ -38,9 +38,10 @@ exports.synchronousChat = async (req, res) => {
           .collection('groups')
           .doc(group_ref)
           .collection('messages')
-          .orderBy('sent_time', 'asc')
+          .orderBy('sent_time', 'desc')
           .limit(20)
           .get();
+        synchronousData.docs.reverse();
       } else {
         const last_chat_doc = await firestore
           .collection('groups')

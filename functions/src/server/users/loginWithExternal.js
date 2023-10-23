@@ -34,20 +34,30 @@ exports.loginWithExternal = async (req, res) => {
           await auth.createUser({
             phoneNumber: `+84${mobile}`,
           });
+
+          // respone to client
+          res.json({
+            message: 'unlinked account',
+            data: {
+              fullname: user.data.fullname,
+              mobile,
+              nickname: '',
+              vinateks_id: user.data.user_id,
+            },
+          });
         } catch (error) {
           // if auth account is exist continue
+          // respone to client
+          res.json({
+            message: 'unlinked account',
+            data: {
+              fullname: user.data.fullname,
+              mobile,
+              nickname: '',
+              vinateks_id: user.data.user_id,
+            },
+          });
         }
-
-        // respone to client
-        res.json({
-          message: 'unlinked account',
-          data: {
-            fullname: user.data.fullname,
-            mobile,
-            nickname: '',
-            vinateks_id: user.data.user_id,
-          },
-        });
       }
       // otherwise, user had created.
       else {
@@ -98,12 +108,14 @@ exports.loginWithExternal = async (req, res) => {
           res.json({
             message: 'success',
             data: {
+              ref: result.docs[0].id,
               fullname: result.docs[0].get('fullname'),
               mobile,
               nickname: result.docs[0].get('nickname'),
               gender: result.docs[0].get('gender'),
               email: result.docs[0].get('email'),
               birthday: result.docs[0].get('birthday'),
+              avatar: result.docs[0].get('avatar'),
             },
             apiKey: apiKey,
             firebaseToken: firebaseToken,

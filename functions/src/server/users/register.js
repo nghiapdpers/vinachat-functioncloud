@@ -39,6 +39,7 @@ exports.register = async function (req, res) {
         email: '',
         birthday: '',
         groups: [],
+        avatar: '',
       });
 
       // payload to create api key
@@ -82,6 +83,8 @@ exports.register = async function (req, res) {
           gender: '1',
           email: '',
           birthday: '',
+          groups: [],
+          avatar: '',
         },
         apiKey,
         firebaseToken,
