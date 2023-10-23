@@ -13,6 +13,9 @@ exports.addMember = async function (memberRefs, groupRef, firestore) {
       left_time: '',
       role: 'member',
     });
+    batch.update(firestore.collection('users').doc(ref), {
+      groups: FieldValue.arrayUnion(group.id),
+    });
   });
 
   batch.update(group, {
