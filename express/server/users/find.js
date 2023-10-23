@@ -66,6 +66,7 @@ async function finding(myRef, keyword, firestore) {
         email: result.docs[0].get('email'),
         birthday: result.docs[0].get('birthday'),
         status: status.empty ? 'N' : status.docs[0].get('status'),
+        avatar: result.docs[0].get('avatar'),
       },
     };
   }

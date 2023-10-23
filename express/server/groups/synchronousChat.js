@@ -33,39 +33,47 @@ exports.synchronousChat = async (req, res) => {
     else {
       let synchronousData;
 
-      if (last_chat_ref == undefined || last_chat_ref == '') {
-        synchronousData = await firestore
-          .collection('groups')
-          .doc(group_ref)
-          .collection('messages')
-          .orderBy('sent_time', 'asc')
-          .limit(20)
-          .get();
-      } else {
-        const last_chat_doc = await firestore
-          .collection('groups')
-          .doc(group_ref)
-          .collection('messages')
-          .doc(last_chat_ref)
-          .get();
+      try {
+        if (last_chat_ref == undefined || last_chat_ref == '') {
+          synchronousData = await firestore
+            .collection('groups')
+            .doc(group_ref)
+            .collection('messages')
+            .orderBy('sent_time', 'desc')
+            .limit(20)
+            .get();
+          synchronousData.docs.reverse();
+        } else {
+          const last_chat_doc = await firestore
+            .collection('groups')
+            .doc(group_ref)
+            .collection('messages')
+            .doc(last_chat_ref)
+            .get();
 
-        synchronousData = await firestore
-          .collection('groups')
-          .doc(group_ref)
-          .collection('messages')
-          .orderBy('sent_time', 'asc')
-          .startAfter(last_chat_doc)
-          .get();
+          synchronousData = await firestore
+            .collection('groups')
+            .doc(group_ref)
+            .collection('messages')
+            .orderBy('sent_time', 'asc')
+            .startAfter(last_chat_doc)
+            .get();
+        }
+        result = {
+          message: 'success',
+          data: synchronousData.docs.map((item) => {
+            return {
+              ref: item.id,
+              ...item.data(),
+            };
+          }),
+        };
+      } catch (error) {
+        result = {
+          message: 'success',
+          data: [],
+        };
       }
-      result = {
-        message: 'success',
-        data: synchronousData.docs.map((item) => {
-          return {
-            ref: item.id,
-            ...item.data(),
-          };
-        }),
-      };
     }
 
     res.json({

@@ -112,12 +112,14 @@ exports.loginWithExternal = async (req, res) => {
           res.json({
             message: 'success',
             data: {
+              ref: result.docs[0].id,
               fullname: result.docs[0].get('fullname'),
               mobile,
               nickname: result.docs[0].get('nickname'),
               gender: result.docs[0].get('gender'),
               email: result.docs[0].get('email'),
               birthday: result.docs[0].get('birthday'),
+              avatar: result.docs[0].get('avatar'),
             },
             apiKey: apiKey,
             firebaseToken: firebaseToken,

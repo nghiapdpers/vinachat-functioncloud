@@ -56,6 +56,7 @@ exports.getGroupChat = async function (req, res) {
         // is group have more than 2 people?
         const isMore = parseInt(item.get('total_member')) > 2;
         let groupName = '';
+        let groupAvatar = '';
 
         // if group is has more 2 people
         if (isMore) {
@@ -79,12 +80,15 @@ exports.getGroupChat = async function (req, res) {
 
           // set name of group is name of another one.
           groupName = member.get('fullname');
+          groupAvatar = member.get('avatar');
         }
 
         // return
         return {
           ref: item.id,
           name: groupName,
+          groupAvatar,
+          adminRef: item.get('adminRef'),
           total_member: item.get('total_member'),
           latest_message_text: item.get('latest_message_text'),
           latest_message_from: item.get('latest_message_from'),

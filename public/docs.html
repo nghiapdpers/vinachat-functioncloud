@@ -90,10 +90,12 @@
                 "nickname": "Biệt danh người dùng, mặc định rỗng",
                 "gender": "Giới tính, 0 là nữ, 1 là nam, mặc định là 1 == Nam",
                 "email": "Email của người dùng, mặc định rỗng",
-                "birthday": "Ngày sinh người dùng, mặc định rỗng"
+                "birthday": "Ngày sinh người dùng, mặc định rỗng",
+                "avatar": "Avatar mặc định của user, mặc định là rỗng"
 
             },
-            "apiKey": "JWT_TOKEN cho phiên đăng nhập"
+            "apiKey": "JWT_TOKEN cho phiên đăng nhập",
+            "firebaseToken": "Firebase token để đăng nhập vào firebase từ client"
         }
     </pre>
 
@@ -120,9 +122,11 @@
                 "nickname": "Biệt danh người dùng",
                 "gender": "Giới tính của người dùng, 0 là nữ, 1 là nam",
                 "email": "Email của người dùng",
-                "birthday": "Ngày sinh của người dùng"
+                "birthday": "Ngày sinh của người dùng",
+                "avatar": "Avatar mặc định của user, mặc định là rỗng"
             },
-            "apiKey": "JWT_TOKEN cho phiên đăng nhập"
+            "apiKey": "JWT_TOKEN cho phiên đăng nhập",
+            "firebaseToken": "Firebase token để đăng nhập vào firebase từ client"
         }
     </pre>
 
@@ -168,9 +172,11 @@
                 "nickname": "Biệt danh người dùng",
                 "gender": "Giới tính của người dùng, 0 là nữ, 1 là nam",
                 "email": "Email của người dùng",
-                "birthday": "Ngày sinh của người dùng"
+                "birthday": "Ngày sinh của người dùng",
+                "avatar": "Avatar mặc định của user, mặc định là rỗng"
             }
-            "apiKey": "JWT_TOKEN cho phiên đăng nhập"
+            "apiKey": "JWT_TOKEN cho phiên đăng nhập",
+            "firebaseToken": "Firebase token để đăng nhập vào firebase từ client"
         }
     </pre>
 
@@ -247,6 +253,7 @@
                 "email": "Email của người dùng được tìm thấy",
                 "birthday": "Ngày sinh của người dùng được tìm thấy",
                 "status": "Tình trạng mối quan hệ hiện tại, chi tiết tại API Request Friend bên dưới."
+                "avatar": "Avatar mặc định của user, mặc định là rỗng"
             },
             "apiKey": "JWT_TOKEN được cập nhật mới"
         }
@@ -315,6 +322,7 @@
                 "gender": "Giới tính của người gửi yêu cầu kết bạn, 0 là nữ, 1 là nam",
                 "email": "Email của của người gửi yêu cầu kết bạn",
                 "birthday": "Ngày sinh của của người gửi yêu cầu kết bạn"
+                "avatar": "Avatar mặc định của người gửi yêu cầu kết bạn, mặc định là rỗng",
               },
               ...
             ]
@@ -365,7 +373,8 @@
             "nickname": "Biệt danh của bạn bè"
             "gender": "Giới tính của bạn bè, 0 là nữ, 1 là nam",
             "email": "Email của của bạn bè",
-            "birthday": "Ngày sinh của của bạn bè"
+            "birthday": "Ngày sinh của của bạn bè",
+            "avatar": "Avatar mặc định của user, mặc định là rỗng"
           },
           ...
         ]
@@ -390,6 +399,7 @@
           {
             "ref": "Reference của nhóm chat",
             "name": "Tên nhóm chat",
+            "groupAvatar": "Avatar nhóm chat, mặc định là rỗng nếu số thành viên nhóm lớn hơn 2",
             "total_member": "Tổng thành viên trong nhóm",
             "latest_message_text": "Nội dung tin nhắn mới nhất",
             "latest_message_from": "Reference của người gửi tin nhắn mới nhất",
@@ -398,6 +408,50 @@
           }
           ...
         ]
+        "apiKey": "JWT_TOKEN được cập nhật mới"
+    }
+    </pre>
+
+    <h2>Xem chi tiết thông tin người dùng (Get Detail User) - POST</h2>
+    <p>
+      Để chi tiết thông tin người dùng, bạn cần thực hiện một yêu cầu POST đến
+      đường dẫn API với token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/user/getDetail
+        Authorization: Bearer API_KEY
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+      {
+        "message": "success",
+        "data": {
+                "ref": "Reference của người dùng",
+                "fullname": "Tên người dùng",
+                "mobile": "Số điện thoại đăng ký",
+                "nickname": "Biệt danh người dùng",
+                "gender": "Giới tính của người dùng, 0 là nữ, 1 là nam",
+                "email": "Email của người dùng",
+                "birthday": "Ngày sinh của người dùng",
+                "avatar": "Avatar mặc định của user, mặc định là rỗng"
+        },
+        "apiKey": "JWT_TOKEN cho phiên đăng nhập"
+    }
+    </pre>
+
+    <h2>Đổi mật khẩu tài khoản (Change Password) - POST</h2>
+    <p>
+      Để đổi mật khẩu tài khoản, bạn cần thực hiện một yêu cầu POST đến đường
+      dẫn API với token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/user/changePassword
+        Authorization: Bearer API_KEY
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+      {
+        "message": "success",
         "apiKey": "JWT_TOKEN được cập nhật mới"
     }
     </pre>
@@ -448,7 +502,7 @@
 
     <h2>Gửi tin nhắn (Send Message) - POST</h2>
     <p>
-      Để thêm thành viên vào nhóm chat, bạn cần thực hiện một yêu cầu POST đến
+      Để gửi tin nhắn vào nhóm chat, bạn cần thực hiện một yêu cầu POST đến
       đường dẫn API với token xác thực và dữ liệu sau:
     </p>
     <pre>
@@ -472,8 +526,8 @@
 
     <h2>Lấy danh sách tin nhắn của nhóm chat (Get List Message) - POST</h2>
     <p>
-      Để thêm thành viên vào nhóm chat, bạn cần thực hiện một yêu cầu POST đến
-      đường dẫn API với token xác thực và dữ liệu sau:
+      Để lấy danh sách tin nhắn của nhóm chat, bạn cần thực hiện một yêu cầu
+      POST đến đường dẫn API với token xác thực và dữ liệu sau:
     </p>
     <pre>
         POST /api/group/getListMessage
@@ -497,7 +551,8 @@
               message: "Nội dung tin nhắn",
               from: "Reference của người gửi tin nhắn",
               sent_time: "Firebase Timestamp Object - Thời gian gửi tin nhắn",
-              type: "Kiểu tin nhắn, 'text' là tin nhắn chữ, 'image' là tin nhắn ảnh"
+              type: "Kiểu tin nhắn, 'text' là tin nhắn chữ, 'image' là tin nhắn ảnh",
+              from_name: "Tên người gửi tin nhắn"
             },
             ...
           ],
@@ -532,39 +587,13 @@
             message: "Nội dung tin nhắn",
             from: "Reference của người gửi tin nhắn",
             sent_time: "Firebase Timestamp Object - Thời gian gửi tin nhắn",
-            type: "Kiểu tin nhắn, 'text' là tin nhắn chữ, 'image' là tin nhắn ảnh"
+            type: "Kiểu tin nhắn, 'text' là tin nhắn chữ, 'image' là tin nhắn ảnh",
+            from_name: "Tên người gửi tin nhắn"
           },
           ...
         ],
         "apiKey": "JWT_TOKEN được cập nhật mới"
       }
-    </pre>
-
-    <h2>Tạo dữ liệu mẫu (Generate Data Test) - POST</h2>
-    <p>
-      Để tạo dữ liệu mẫu, bạn cần thực hiện một yêu cầu POST đến đường dẫn API
-      với token xác thực và dữ liệu sau:
-    </p>
-    <pre>
-        POST /api/generate
-        Authorization: Bearer API_KEY
-        {
-          "data": [
-            {
-              fullname: "Tên đăng ký",
-              mobile: "Số điện thoại đăng ký"
-            },
-            ...
-          ],
-          "make_friend_for_id": "Mảng chứa vị trí muốn kết bạn (bắt đầu từ 0). Ví dụ [1,2,3] sẽ thực hiện kết bạn
-          cho các tài khoản có vị trí 1,2,3 trong mảng data được cung cấp, 1 sẽ kết bạn với 2 và 3, 2 sẽ kết bạn
-          với 3. Tương tự, cung cấp bao nhiêu vị trí, thì các tài khoản được cung cấp trong mảng data sẽ kết bạn với nhau."
-        }
-    </pre>
-    <p>Trả về:</p>
-    <pre>
-      EMPTY - rỗng. API này không trả về bất kỳ dữ liệu nào. Các tài khoản được tạo bằng số điện thoại
-      được cung cấp với mật khẩu là "1234"
     </pre>
   </body>
 </html>

@@ -98,6 +98,14 @@ users.post('/getGroupChat', async (req, res) => {
   userActions.getGroupChat(req, res, firestore, database);
 });
 
+users.post('/getDetail', async (req, res) => {
+  userActions.getDetail(req, res);
+});
+
+users.post('/changePassword', async (req, res) => {
+  userActions.changePassword(req, res);
+});
+
 //---------------------------------------------------------------------------
 // --------------------GROUP------------------
 //
@@ -121,48 +129,52 @@ groups.post('/synchronous', async (req, res) => {
   groupActions.synchronous(req, res);
 });
 
+groups.post('/updateLatestMessage', async (req, res) => {
+  groupActions.updateLatestMessage(req, res);
+});
+
 //---------------------------------------------------------------------------
 // ------------ UPDATE LATEST MESSAGE FOR GROUP
-firestore.collectionGroup('messages').onSnapshot((snapshot) => {
-  snapshot.docChanges().forEach((item) => {
-    const timer = setTimeout(() => {
-      isBypassFirstStart = true;
-      clearTimeout(timer);
-    });
-    if (item.type === 'added' && isBypassFirstStart) {
-      const snapshot = item.doc;
-      const groupId = item.doc.ref.parent.parent.id;
-      const context = {
-        params: {
-          groupId,
-        },
-      };
+// firestore.collectionGroup('messages').onSnapshot((snapshot) => {
+//   snapshot.docChanges().forEach((item) => {
+//     const timer = setTimeout(() => {
+//       isBypassFirstStart = true;
+//       clearTimeout(timer);
+//     });
+//     if (item.type === 'added' && isBypassFirstStart) {
+//       const snapshot = item.doc;
+//       const groupId = item.doc.ref.parent.parent.id;
+//       const context = {
+//         params: {
+//           groupId,
+//         },
+//       };
 
-      onMessageListener(snapshot, context);
-    }
-  });
-});
+//       onMessageListener(snapshot, context);
+//     }
+//   });
+// });
 
 //---------------------------------------------------------------------------
 // ------------chức năng chỉ để test - only for test
 //
-api.post('/refresh', async (req, res) => {
-  const result = await apiKeyUtils.refreshApiKey(req, database);
+// api.post('/refresh', async (req, res) => {
+//   const result = await apiKeyUtils.refreshApiKey(req, database);
 
-  res.json(result);
-  res.end();
-});
+//   res.json(result);
+//   res.end();
+// });
 
-api.post('/verify', async (req, res) => {
-  const result = await apiKeyUtils.verifyApiKey(req, database);
+// api.post('/verify', async (req, res) => {
+//   const result = await apiKeyUtils.verifyApiKey(req, database);
 
-  res.json(result);
-  res.end();
-});
+//   res.json(result);
+//   res.end();
+// });
 
-api.post('/generate', (req, res) => {
-  generateData(req, res);
-});
+// api.post('/generate', (req, res) => {
+//   generateData(req, res);
+// });
 
 api.use('/user', users);
 api.use('/group', groups);

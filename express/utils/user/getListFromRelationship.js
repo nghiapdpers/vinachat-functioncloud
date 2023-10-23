@@ -35,6 +35,7 @@ exports.getListFromRelationship = async function (
         gender: result.get('gender'),
         email: result.get('email'),
         birthday: result.get('birthday'),
+        avatar: result.get('avatar'),
       };
     });
 
