@@ -5,24 +5,30 @@ exports.updateRelationship = async function (
   frRef,
   myStatus,
   frStatus,
-  firestore
+  firestore,
+  groupRef
 ) {
   try {
+    // get now timedate
     const now = Timestamp.now();
     const batch = firestore.batch();
 
+    // create doc to batch update
+    // my doc
     const me = await firestore
       .collection('users')
       .doc(myRef)
       .collection('relationship')
       .doc(frRef);
 
+    // friend doc
     const friend = firestore
       .collection('users')
       .doc(frRef)
       .collection('relationship')
       .doc(myRef);
 
+    // my log
     const mylog = firestore
       .collection('users')
       .doc(myRef)
@@ -31,6 +37,7 @@ exports.updateRelationship = async function (
       .collection('log')
       .doc();
 
+    // friend log
     const friendlog = firestore
       .collection('users')
       .doc(frRef)
@@ -39,14 +46,29 @@ exports.updateRelationship = async function (
       .collection('log')
       .doc();
 
-    batch.set(me, {
+    // my data to update
+    const myData = {
       status: myStatus,
-    });
+      groupRef: groupRef,
+    };
 
-    batch.set(friend, {
+    // friend data to update
+    const frData = {
       status: frStatus,
-    });
+      groupRef: groupRef,
+    };
 
+    if (!groupRef) {
+      delete myData.groupRef;
+      delete frData.groupRef;
+    }
+
+    // set data
+    batch.set(me, myData);
+
+    batch.set(friend, frData);
+
+    // set log
     batch.set(mylog, {
       status: myStatus,
       timestamp: now,
@@ -57,6 +79,7 @@ exports.updateRelationship = async function (
       timestamp: now,
     });
 
+    // commit batch
     await batch.commit();
 
     return {
