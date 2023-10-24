@@ -13,19 +13,29 @@ exports.replyRequest = async function (req, res, firestore, database) {
     const myStatus = reply == 'accept' ? 'F' : 'D';
     const frStatus = reply == 'accept' ? 'F' : 'ID';
 
+    let groupRef = '';
+
+    // if user accept friend request, create group chat with 2 member
+    if (reply == 'accept') {
+      const result = await createGroup(
+        [refreshApi.decrypt.ref, ref],
+        '',
+        '',
+        firestore
+      );
+
+      groupRef = result.data.groupRef;
+    }
+
     // update relationship
     const result = await updateRelationship(
       refreshApi.decrypt.ref,
       ref,
       myStatus,
       frStatus,
-      firestore
+      firestore,
+      groupRef
     );
-
-    // if user accept friend request, create group chat with 2 member
-    if (reply == 'accept') {
-      await createGroup([refreshApi.decrypt.ref, ref], '', '', firestore);
-    }
 
     res.json({
       ...result,

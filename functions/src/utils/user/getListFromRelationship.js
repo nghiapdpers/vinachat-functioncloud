@@ -1,10 +1,10 @@
 const { FieldPath } = require('firebase-admin/firestore');
 
-exports.getListFromRelationship = async function (
-  statusFind,
-  myRef,
-  firestore
-) {
+const admin = require('firebase-admin');
+
+const firestore = admin.firestore();
+
+exports.getListFromRelationship = async function (statusFind, myRef) {
   // filter list
   const listRef = await firestore
     .collection('users')
@@ -14,9 +14,11 @@ exports.getListFromRelationship = async function (
     .get();
 
   let listId = [];
+  let listGroupRef = [];
 
-  listRef.forEach((result) => {
-    listId.push(result.id);
+  listRef.docs.forEach((result, index) => {
+    listId[index] = result.id;
+    listGroupRef[index] = result.get('groupRef');
   });
 
   // if has data
@@ -26,8 +28,8 @@ exports.getListFromRelationship = async function (
       .where(FieldPath.documentId(), 'in', listId)
       .get();
 
-    const data = list.docs.map((result) => {
-      return {
+    const data = list.docs.map((result, index) => {
+      let dt = {
         ref: result.id,
         fullname: result.get('fullname'),
         mobile: result.get('mobile'),
@@ -37,6 +39,15 @@ exports.getListFromRelationship = async function (
         birthday: result.get('birthday'),
         avatar: result.get('avatar'),
       };
+
+      if (listGroupRef[index] && statusFind == 'F') {
+        dt = {
+          ...dt,
+          groupRef: listGroupRef[index],
+        };
+      }
+
+      return dt;
     });
 
     return data;

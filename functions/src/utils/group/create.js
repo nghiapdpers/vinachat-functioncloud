@@ -15,6 +15,7 @@ exports.createGroup = async function (refs, adminRef, name, firestore) {
     name: name,
     total_member: refs.length,
     adminRef: adminRef,
+    groupAvatar: '',
     latest_message_sent_time: now,
   });
 
@@ -45,6 +46,9 @@ exports.createGroup = async function (refs, adminRef, name, firestore) {
 
     return {
       message: 'success',
+      data: {
+        groupRef: groupRef.id,
+      },
     };
   } catch (error) {
     console.error('UTILS / GROUP / CREATE >> ERROR ', error);
