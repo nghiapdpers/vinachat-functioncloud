@@ -62,6 +62,7 @@ exports.getGroupChat = async function (req, res) {
         if (isMore) {
           // set name of group
           groupName = item.get('name');
+          groupAvatar = item.get('groupAvatar');
         }
         // otherwise, group is only has 2 people
         else {

@@ -8,7 +8,7 @@ exports.createGroup = async function (refs, adminRef, name, firestore) {
   const groupRef = firestore.collection('groups').doc();
 
   // time to create/join group
-  const now = Timestamp.now();
+  const now = FieldValue.serverTimestamp();
 
   // create group with reference above
   batch.set(groupRef, {

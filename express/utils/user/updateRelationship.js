@@ -1,4 +1,4 @@
-const { Timestamp } = require('firebase-admin/firestore');
+const { Timestamp, FieldValue } = require('firebase-admin/firestore');
 
 exports.updateRelationship = async function (
   myRef,
@@ -10,7 +10,7 @@ exports.updateRelationship = async function (
 ) {
   try {
     // get now timedate
-    const now = Timestamp.now();
+    const now = FieldValue.serverTimestamp();
     const batch = firestore.batch();
 
     // create doc to batch update
