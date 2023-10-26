@@ -32,9 +32,16 @@ const groups = express();
 
 main.use(express.static('public'));
 main.use(bodyParser.json());
+main.use(bodyParser.urlencoded({ extended: false }));
+
 api.use(bodyParser.json());
+api.use(bodyParser.urlencoded({ extended: false }));
+
 users.use(bodyParser.json());
+users.use(bodyParser.urlencoded({ extended: false }));
+
 groups.use(bodyParser.json());
+groups.use(bodyParser.urlencoded({ extended: false }));
 
 // running server
 main.listen(process.env.PORT | 3000, () => {
@@ -131,6 +138,10 @@ groups.post('/synchronous', async (req, res) => {
 
 groups.post('/updateLatestMessage', async (req, res) => {
   groupActions.updateLatestMessage(req, res);
+});
+
+groups.post('/getDetail', async (req, res) => {
+  groupActions.getDetailGroupChat(req, res);
 });
 
 //---------------------------------------------------------------------------
