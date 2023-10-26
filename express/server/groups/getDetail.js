@@ -39,12 +39,41 @@ exports.getDetailGroupChat = async (req, res) => {
         .doc(group_ref)
         .get();
 
+      const isMore = parseInt(detailGroup.get('total_member')) > 2;
+      let groupName = '';
+      let groupAvatar = '';
+
+      if (isMore) {
+        // set name of group
+        groupName = detailGroup.get('name');
+        groupAvatar = detailGroup.get('groupAvatar');
+      }
+      // otherwise, group is only has 2 people
+      else {
+        // get another member
+        const members = await detailGroup.ref
+          .collection('members')
+          .where(FieldPath.documentId(), '!=', refreshApi.decrypt.ref)
+          .limit(1)
+          .get();
+
+        // get another member information
+        const member = await firestore
+          .collection('users')
+          .doc(members.docs[0].id)
+          .get();
+
+        // set name of group is name of another one.
+        groupName = member.get('fullname');
+        groupAvatar = member.get('avatar');
+      }
+
       const detail = {
         ref: detailGroup.id,
         adminRef: detailGroup.get('adminRef'),
         total_member: detailGroup.get('total_member'),
-        groupAvatar: detailGroup.get('groupAvatar'),
-        name: detailGroup.get('name'),
+        groupAvatar: groupAvatar,
+        name: groupName,
       };
 
       // get members list data
@@ -57,11 +86,13 @@ exports.getDetailGroupChat = async (req, res) => {
       // get member ref
       const groupMemberRefs = [];
       const groupMemberData = groupMember.docs.map((item) => {
-        groupMemberRefs.push(item.id);
-        return {
-          ref: item.id,
-          ...item.data(),
-        };
+        if (item.id !== refreshApi.decrypt.ref) {
+          groupMemberRefs.push(item.id);
+          return {
+            ref: item.id,
+            ...item.data(),
+          };
+        }
       });
 
       // generate member data
