@@ -102,6 +102,10 @@ groups.post('/synchronous', async (req, res) => {
   groupActions.synchronous(req, res);
 });
 
+groups.post('/getDetail', async (req, res) => {
+  groupActions.getDetailGroupChat(req, res);
+});
+
 //---------------------------------------------------------------------------
 // ---------------------STORAGE---------------------
 //
