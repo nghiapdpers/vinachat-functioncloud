@@ -600,6 +600,49 @@
       }
     </pre>
 
+    <h2>Chi tiết nhóm chat (Get Detail Group Chat)- POST</h2>
+    <p>
+      Để lấy dữ liệu chi tiết nhóm chat, bạn cần thực hiện một yêu cầu POST đến
+      đường dẫn API với token xác thực và dữ liệu sau:
+    </p>
+    <pre>
+        POST /api/group/getDetail
+        Authorization: Bearer API_KEY
+        {
+          "group_ref": "Reference của nhóm chat",
+        }
+    </pre>
+    <p>Trả về:</p>
+    <pre>
+      {
+        "message": "success",
+        "data": {
+          "ref": "Reference của nhóm chat",
+          "adminRef": "Reference user của admin",
+          "total_member": "Tổng thành viên trong nhóm",
+          "groupAvatar": "Link hình ảnh đại diện của nhóm chat",
+          "name": "Tên nhóm chat",
+          "members": [
+              {
+                  "ref": "Reference của thành viên",
+                  "left_time": "Thời gian rời nhóm",
+                  "joint_time": "Thời gian tham gia nhóm",
+                  "role": "Role của thành viên, 'admin' hoặc 'member'.",
+                  "fullname": "Tên thành viên",
+                  "nickname": "Nickname của thành viên",
+                  "birthday": "Ngày sinh của thành viên",
+                  "gender": "Giới tính của thành viên, 1 là nam, 0 là nữ",
+                  "avatar": "Link hình ảnh avatar của thành viên.",
+                  "email": "Email của thành viên",
+                  "mobile": "Số điện thoại của thành viên"
+              },
+              ...
+          ]
+        },
+        "apiKey": "JWT_TOKEN được cập nhật mới"
+      }
+    </pre>
+
     <h2>Tạo dữ liệu mẫu (Generate Data Test) - POST</h2>
     <p>
       Để tạo dữ liệu mẫu, bạn cần thực hiện một yêu cầu POST đến đường dẫn API
