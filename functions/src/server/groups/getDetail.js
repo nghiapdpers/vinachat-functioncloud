@@ -81,18 +81,17 @@ exports.getDetailGroupChat = async (req, res) => {
         .collection('groups')
         .doc(group_ref)
         .collection('members')
+        .where(FieldPath.documentId(), '!=', refreshApi.decrypt.ref)
         .get();
 
       // get member ref
       const groupMemberRefs = [];
       const groupMemberData = groupMember.docs.map((item) => {
-        if (item.id !== refreshApi.decrypt.ref) {
-          groupMemberRefs.push(item.id);
-          return {
-            ref: item.id,
-            ...item.data(),
-          };
-        }
+        groupMemberRefs.push(item.id);
+        return {
+          ref: item.id,
+          ...item.data(),
+        };
       });
 
       // generate member data
@@ -100,6 +99,7 @@ exports.getDetailGroupChat = async (req, res) => {
         .collection('users')
         .where(FieldPath.documentId(), 'in', groupMemberRefs)
         .get();
+
       const memberDataFromUsers = memberFromUsers.docs.map((item) => {
         return {
           fullname: item.get('fullname'),
