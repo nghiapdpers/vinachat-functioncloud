@@ -5,7 +5,7 @@ exports.addMember = async function (memberRefs, groupRef, firestore) {
 
   const group = firestore.collection('groups').doc(groupRef);
 
-  const now = Timestamp.now();
+  const now = FieldValue.serverTimestamp();
 
   memberRefs.map((ref) => {
     batch.set(group.collection('members').doc(ref), {

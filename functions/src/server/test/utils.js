@@ -1,5 +1,5 @@
 const admin = require('firebase-admin');
-const { Timestamp } = require('firebase-admin/firestore');
+const { Timestamp, FieldValue } = require('firebase-admin/firestore');
 const { v5 } = require('uuid');
 const { createGroup } = require('../../utils/group/create');
 
@@ -71,7 +71,7 @@ exports.makeFriend = async function (mobiles) {
   });
 
   // get timestamp
-  const now = Timestamp.now();
+  const now = FieldValue.serverTimestamp();
 
   // make friend
   statusRefs.forEach((item) => {

@@ -1,4 +1,4 @@
-const { Timestamp } = require('firebase-admin/firestore');
+const { Timestamp, FieldValue } = require('firebase-admin/firestore');
 
 exports.sendMessage = async function sendMessage(
   from_ref,
@@ -12,7 +12,7 @@ exports.sendMessage = async function sendMessage(
 
   const fromUser = await firestore.collection('users').doc(from_ref).get();
 
-  const now = Timestamp.now();
+  const now = FieldValue.serverTimestamp();
 
   batch.update(toGroupRef, {
     latest_message_from: from_ref,
